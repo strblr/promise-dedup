@@ -1,0 +1,5 @@
+node_modules
+.idea
+src
+lib/index.test.d.ts
+lib/index.test.js
