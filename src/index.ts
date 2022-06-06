@@ -2,43 +2,29 @@ import stringify from "fast-json-stable-stringify";
 
 export type Key = unknown[];
 export type Stale = "never" | "settled" | number;
-export type Settings = { key: Key; stale: Stale };
 
 export const cache = new Map<string, PromiseLike<any>>();
 
 export default function dedup<P extends PromiseLike<any>>(
   exec: () => P,
-  key: Key
-): P;
-
-export default function dedup<P extends PromiseLike<any>>(
-  exec: () => P,
-  settings: Settings
-): P;
-
-export default function dedup<P extends PromiseLike<any>>(
-  exec: () => P,
-  settings_: Key | Settings
+  key: Key,
+  stale: Stale = "settled"
 ): P {
-  const settings: Settings = !Array.isArray(settings_)
-    ? settings_
-    : { key: settings_, stale: "settled" };
+  const strKey = stringify(key);
 
-  const key = stringify(settings.key);
-
-  const cached = cache.get(key);
+  const cached = cache.get(strKey);
   if (cached) return cached as P;
 
   let promise = exec();
-  cache.set(key, promise);
+  cache.set(strKey, promise);
 
   const clean = () => {
-    cache.delete(key);
+    cache.delete(strKey);
   };
 
-  if (typeof settings.stale === "number") {
-    setTimeout(clean, settings.stale);
-  } else if (settings.stale === "settled") {
+  if (typeof stale === "number") {
+    setTimeout(clean, stale);
+  } else if (stale === "settled") {
     promise = promise.then(
       (value) => {
         clean();
