@@ -1,4 +1,4 @@
-import dedup, { cache } from "./index";
+import { cache, dedup } from "./index";
 
 it("works", async () => {
   async function doStuff() {

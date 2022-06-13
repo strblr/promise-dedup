@@ -7,7 +7,7 @@ Deduplicate any promise.
 By default, `dedup` caches promises until they are settled:
 
 ```ts
-import dedup from "promise-dedup";
+import { dedup } from "promise-dedup";
 
 async function doStuff() {
   await new Promise((resolve) => setTimeout(resolve, 5000)); // Waiting five seconds

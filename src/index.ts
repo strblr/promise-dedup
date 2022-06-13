@@ -5,7 +5,7 @@ export type Stale = "never" | "settled" | number;
 
 export const cache = new Map<string, PromiseLike<any>>();
 
-export default function dedup<P extends PromiseLike<any>>(
+export function dedup<P extends PromiseLike<any>>(
   exec: () => P,
   key: Key,
   stale: Stale = "settled"
